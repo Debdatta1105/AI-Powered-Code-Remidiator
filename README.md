@@ -1,4 +1,4 @@
-# 🚀 AICompiler — Autonomous Jenkins Failure Remediation Agent
+# 🚀 AI-Powered-Code-Remidiator — Autonomous Jenkins Failure Remediation Agent
 
 > **An Agentic AI system that analyzes failed Jenkins jobs, diagnoses root causes using LLMs, proposes code fixes, and can automatically raise GitHub Pull Requests for remediation.**
 
