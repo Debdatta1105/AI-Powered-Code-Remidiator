@@ -134,7 +134,7 @@ AICompiler/
 ### Failed Jenkins Job
 
 ```bash
-javac Main.java
+
 error: cannot find symbol
 ```
 
