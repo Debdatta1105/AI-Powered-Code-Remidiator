@@ -1,4 +1,5 @@
 import os
+import streamlit as st
 from github import Github
 
 
@@ -9,7 +10,7 @@ def create_auto_fix_pr(fix):
         return
 
     g = Github(
-        os.getenv("GITHUB_TOKEN")
+        st.secrets["GITHUB_TOKEN"]
     )
 
     repo = g.get_repo(
