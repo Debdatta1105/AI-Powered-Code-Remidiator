@@ -57,6 +57,24 @@ Return ONLY valid JSON.
 
 Rules:
 - Suggest only safe automated fixes
+- Identify the exact file and line number from the logs if available
+- If line number is not present, infer best possible location
+- Determine the correct operation:
+  - "insert" → adding new code line
+  - "replace" → modifying existing code line
+  - "delete" → removing incorrect code line
+  - "modify"  → update part of an existing line (preferred for small fixes)
+FOR MODIFY OPERATION:
+- Provide "match_text" → exact line from file
+- Provide "code_patch" → corrected version of that line
+- Do NOT include explanations
+- Keep change minimal (only what is required)
+DISAMBIGUATION (VERY IMPORTANT):
+- If the same line may appear multiple times:
+  - Provide "match_context_before" and/or "match_context_after"
+  - These should be nearby lines to uniquely identify the location
+
+- Prefer precise fixes over generic ones
 - If no safe fix exists, set can_auto_fix to false
 - Do not return explanations outside JSON
 
@@ -67,6 +85,12 @@ Return format:
 "root_cause":"",
 "can_auto_fix":true,
 "target_file":"",
+"target_line":"",
+"operation": "insert | replace | delete",
+"end_line": 0,
+"match_context_before": "",
+"match_text": "",
+"match_context_after": "",
 "fix_description":"",
 "code_patch":"",
 "pr_title":"",

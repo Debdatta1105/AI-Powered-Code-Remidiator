@@ -45,46 +45,116 @@ def create_auto_fix_pr(fix):
     # Read file to modify
     # ----------------------------
 
-    target_file = fix["target_file"]
+    target_file = fix.get("target_file")
+    if not target_file:
+        print("No target file provided")
+        return
 
-    file = repo.get_contents(
-        target_file,
-        ref=branch_name
-    )
+    try:
+        file = repo.get_contents(target_file, ref=branch_name)
+    except Exception:
+        print("File not found")
+        return
 
     old_content = file.decoded_content.decode()
-
-    # VERY SIMPLE PATCH EXAMPLE:
-    # prepend generated code patch
-
-    new_content = (
-        fix["code_patch"]
-        + "\n"
-        + old_content
-    )
+    lines = old_content.split("\n")
 
     # ----------------------------
-    # Commit fix
+    # Parse inputs safely
+    # ----------------------------
+    try:
+        start = int(fix.get("target_line", 1)) - 1
+    except:
+        start = 0
+
+    try:
+        end = int(fix.get("end_line", start + 1))
+    except:
+        end = start + 1
+
+    start = max(0, min(start, len(lines)))
+    end = max(start, min(end, len(lines)))
+
+    operation = fix.get("operation", "insert")
+    patch = fix.get("code_patch", "")
+    patch_lines = patch.split("\n")
+
+    match_text = fix.get("match_text", "").strip()
+    before = fix.get("match_context_before", "")
+    after = fix.get("match_context_after", "")
+
+    # ----------------------------
+    # Context-based matching
+    # ----------------------------
+    def find_match_index():
+        for i in range(len(lines)):
+            if match_text and match_text == lines[i].strip():
+
+                before_ok = True
+                after_ok = True
+
+                if before:
+                    before_ok = any(before in lines[j] for j in range(max(0, i-5), i))
+
+                if after:
+                    after_ok = any(after in lines[j] for j in range(i+1, min(len(lines), i+6)))
+
+                if before_ok and after_ok:
+                    return i
+        return None
+
+    match_index = find_match_index()
+
+    # ----------------------------
+    # APPLY PATCH
     # ----------------------------
 
+    if operation == "modify":
+        if match_index is not None:
+            lines[match_index] = patch
+        else:
+            # fallback to line number
+            lines[start] = patch
+
+    elif operation == "replace":
+        if match_index is not None:
+            lines[match_index:match_index+1] = patch_lines
+        else:
+            lines[start:end] = patch_lines
+
+    elif operation == "delete":
+        if match_index is not None:
+            del lines[match_index]
+        else:
+            del lines[start:end]
+
+    else:  # insert
+        if match_index is not None:
+            lines.insert(match_index, patch)
+        else:
+            lines[start:start] = patch_lines
+
+    new_content = "\n".join(lines)
+
+    # ----------------------------
+    # Commit
+    # ----------------------------
     repo.update_file(
         path=target_file,
-        message=fix["pr_title"],
+        message=fix.get("pr_title", "Auto fix"),
         content=new_content,
         sha=file.sha,
         branch=branch_name
     )
 
     # ----------------------------
-    # Open PR
+    # Create PR
     # ----------------------------
-
     pr = repo.create_pull(
-        title=fix["pr_title"],
-        body=fix["pr_body"],
+        title=fix.get("pr_title", "Auto Fix"),
+        body=fix.get("pr_body", ""),
         head=branch_name,
         base=base_branch
     )
 
-    print("PR Created:")
-    print(pr.html_url)
+    print("PR Created:", pr.html_url)

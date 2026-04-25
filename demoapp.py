@@ -141,7 +141,7 @@ console_output = st.text_area(
     height=300
 )
 
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 
 # ------------------------
 # Analyze Failure
@@ -210,9 +210,36 @@ with col3:
                     )
 
                 st.success("✅ Pull Request created!")
+                st.session_state["pr_created"] = True
 
                 if pr_url:
                     st.markdown(f"🔗 [View PR]({pr_url})")
 
             except Exception as e:
                 st.error(f"PR creation failed: {e}")
+                st.session_state["pr_created"] = False
+
+# ------------------------
+# Retrigger Build
+# ------------------------
+
+with col4:
+    if st.button("♻️ Retrigger Build"):
+
+        if not st.session_state.get("pr_created", False):
+            st.error("Create a PR first before retriggering the build.")
+        else:
+            job = st.session_state.get("job_name", "")
+            if not job or job == "Select a job":
+                st.error("Please select a job first.")
+            else:
+                try:
+                    if USE_MOCK:
+                        st.success("✅ Build triggered (Demo Mode)")
+                    else:
+                        with st.spinner("Triggering build..."):
+                            result = jenkins_client.trigger_build(job)
+                        st.success(f"✅ {result}")
+
+                except Exception as e:
+                    st.error(f"Failed to trigger build: {e}")

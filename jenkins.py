@@ -69,9 +69,15 @@ class JenkinsClient:
     # Trigger rebuild
     # -----------------------------
     def trigger_build(self, job_name):
-        url = f"{self.url}/job/{job_name}/build"
+        url = f"{self.url}/job/{job_name}/buildWithParameters"
 
-        r = requests.post(url, auth=self.auth)
+        params = {
+            "REPO_URL": "https://github.com/Debdatta1105/Simple-Chat.git",
+            "BRANCH_NAME": "auto-fix-jenkins-build"
+        }
+
+        r = requests.post(url, auth=self.auth, params=params)
+
         r.raise_for_status()
 
         return "Build triggered"
