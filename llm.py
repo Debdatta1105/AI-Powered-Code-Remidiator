@@ -5,7 +5,6 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.exceptions import OutputParserException
 from dotenv import load_dotenv
-from matplotlib.pylab import fix
 from generate_pr import create_auto_fix_pr
 from jenkins import JenkinsClient
 import json
