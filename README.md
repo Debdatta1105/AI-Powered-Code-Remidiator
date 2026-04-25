@@ -12,7 +12,7 @@ CI/CD failures slow down development.
 
 This system automates the workflow:
 
-**Failed Build → Root Cause → Suggested Fix → PR Creation**
+**Failed Build → Root Cause → Suggested Fix → PR Creation -> Re-trigger Job**
 
 ---
 
@@ -55,7 +55,7 @@ Built with Streamlit:
 * View logs
 * Analyze failure
 * Generate fix
-* Trigger PR
+* Trigger PR (Validation)
 
 ---
 
@@ -81,6 +81,8 @@ Built with Streamlit:
                 +----------------+
                          |
                    Auto Fix PR
+                         |
+            Trigger Jenkins Rebuild
 ```
 
 ---
