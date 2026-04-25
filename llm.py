@@ -6,17 +6,24 @@ from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.exceptions import OutputParserException
 from dotenv import load_dotenv
 from generate_pr import create_auto_fix_pr
-import streamlit as st
 from jenkins import JenkinsClient
 import json
 from generate_pr import create_auto_fix_pr
+import streamlit as st
 
 load_dotenv()
+
+def get_secret(key, default=None):
+    try:
+        return st.secrets[key]
+    except Exception:
+        return os.getenv(key, default)
+
 print(os.getenv("JENKINS_USERNAME"))
 print(os.getenv("API_TOKEN"))
 llm = ChatGroq(
             temperature=0, 
-            groq_api_key=st.secrets["GROQ_API_KEY"],
+            groq_api_key=get_secret("GROQ_API_KEY"),
             model_name="llama-3.3-70b-versatile")
 def explain_build_failure(console_output):
     prompt = PromptTemplate(

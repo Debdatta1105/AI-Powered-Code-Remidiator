@@ -1,7 +1,12 @@
 import os
-import streamlit as st
 from github import Github
+import streamlit as st
 
+def get_secret(key, default=None):
+    try:
+        return st.secrets[key]
+    except Exception:
+        return os.getenv(key, default)
 
 def create_auto_fix_pr(fix):
 
@@ -10,7 +15,7 @@ def create_auto_fix_pr(fix):
         return
 
     g = Github(
-        st.secrets["GITHUB_TOKEN"]
+        get_secret("GITHUB_TOKEN")
     )
 
     repo = g.get_repo(
