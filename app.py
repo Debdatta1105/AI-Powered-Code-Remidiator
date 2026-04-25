@@ -10,6 +10,7 @@ from llm import suggest_fix
 from generate_pr import create_auto_fix_pr
 
 load_dotenv()
+USE_MOCK = st.secrets.get("USE_MOCK", True)
 
 jenkins_client = JenkinsClient(
         url=os.getenv("JENKINS_URL"),

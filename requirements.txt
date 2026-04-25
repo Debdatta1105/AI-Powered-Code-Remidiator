@@ -4,3 +4,5 @@ PyGithub
 python-dotenv
 langchain-groq
 langchain-core
+langchain
+langchain-community
