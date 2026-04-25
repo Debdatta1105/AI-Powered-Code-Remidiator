@@ -61,8 +61,26 @@ Built with Streamlit:
 
 ## 🏗 Architecture
 
-```
-Jenkins → LLM Agent → Fix Generator → GitHub PR
+```text
+                +----------------+
+                | Jenkins Server  |
+                +--------+-------+
+                         |
+               Read Failed Build Logs
+                         |
+                         v
+                +----------------+
+                | MCP / AI Agent  |
+                +----------------+
+                    |         |
+            Root Cause       Fix Generation
+                    |         |
+                    v         v
+                +----------------+
+                | GitHub PR Bot   |
+                +----------------+
+                         |
+                   Auto Fix PR
 ```
 
 ---
