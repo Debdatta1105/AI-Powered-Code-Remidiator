@@ -1,76 +1,61 @@
-# 🚀 AI-Powered-Code-Remidiator — Autonomous Jenkins Failure Remediation Agent
+# 🚀 AI-Powered Code Remediator — Jenkins Failure Auto-Fix Agent
 
-> **An Agentic AI system that analyzes failed Jenkins jobs, diagnoses root causes using LLMs, proposes code fixes, and can automatically raise GitHub Pull Requests for remediation.**
+🔗 **Live Demo:** https://debdatta-ai-powered-code-generator.streamlit.app/
 
-![Python](https://img.shields.io/badge/Python-3.12-blue)
-![Jenkins](https://img.shields.io/badge/Jenkins-CI-red)
-![LangChain](https://img.shields.io/badge/LangChain-Agent-green)
-![Groq](https://img.shields.io/badge/LLM-Groq-orange)
-![GitHub](https://img.shields.io/badge/GitHub-PR_Automation-black)
+> An AI-driven system that analyzes Jenkins build failures, identifies root causes using LLMs, generates fixes, and can create GitHub Pull Requests automatically.
 
 ---
 
-## 🔥 Why This Project Matters
+## ⚡ What This Does
 
-CI/CD failures cost engineering teams time.
+CI/CD failures slow down development.
 
-Developers spend hours:
+This system automates the workflow:
 
-* Reading Jenkins console logs
-* Diagnosing root causes
-* Applying repetitive fixes
-* Creating remediation PRs manually
-
-**AICompiler automates that workflow.**
-
-It acts like an autonomous remediation agent:
-
-**Failed Job → Root Cause Analysis → Suggested Fix → Auto PR**
+**Failed Build → Root Cause → Suggested Fix → PR Creation**
 
 ---
 
-## ✨ Core Features
+## 🧠 Key Capabilities
 
-### 🧠 AI Failure Analysis
+### 1. Failure Analysis
 
-* Connects to Jenkins
-* Reads failed job console output
-* Uses LLMs to explain build failures
-* Identifies probable root causes
-
-### 🔧 Auto-Fix Generation
-
-Generates safe automated fixes for issues like:
-
-✅ Missing imports
-✅ Compilation errors
-✅ Dependency issues
-✅ Syntax errors
-✅ Test failures
-✅ Basic CI misconfigurations
+* Reads Jenkins console logs
+* Uses LLMs (Groq LLaMA 3.3 70B) to explain failures
+* Identifies root causes (compilation, dependency, test errors)
 
 ---
 
-### 🤖 Automated Pull Request Creation
+### 2. Fix Generation
 
-If a fix is safe:
+Automatically suggests fixes such as:
 
-* Creates code patch
-* Commits remediation
-* Opens GitHub PR automatically
-* Can assign reviewers (extensible)
+* Missing imports
+* Syntax errors
+* Dependency issues
+* Test failures
+* Basic CI misconfigurations
 
 ---
 
-### 📊 Streamlit Dashboard
+### 3. PR Automation
 
-Simple UI to:
+* Generates patch
+* Creates commit
+* Opens GitHub Pull Request
+* (Extensible for reviewers/approval)
 
-* Select failed jobs
-* View console logs
-* Get AI diagnosis
-* Review proposed fixes
-* Trigger PR creation
+---
+
+### 4. Interactive UI
+
+Built with Streamlit:
+
+* Select job / load failure
+* View logs
+* Analyze failure
+* Generate fix
+* Trigger PR
 
 ---
 
@@ -102,45 +87,42 @@ Simple UI to:
 
 ## ⚙️ Tech Stack
 
-| Layer           | Tech                 |
-| --------------- | -------------------- |
-| Language        | Python               |
-| Agent Framework | LangChain            |
-| LLM             | Groq (Llama 3.3 70B) |
-| CI Integration  | Jenkins API          |
-| SCM Automation  | GitHub API           |
-| UI              | Streamlit            |
-| Environment     | python-dotenv        |
+| Layer     | Tech                 |
+| --------- | -------------------- |
+| Language  | Python               |
+| LLM       | Groq (LLaMA 3.3 70B) |
+| Framework | LangChain            |
+| CI        | Jenkins API          |
+| SCM       | GitHub API           |
+| UI        | Streamlit            |
 
 ---
 
-## 📂 Project Structure
+## 🎮 Demo Mode vs Live Mode
 
-```bash
-AICompiler/
-│
-├── app.py                # Streamlit UI
-├── llm.py                # Failure analysis + fix generation
-├── jenkins.py            # Jenkins integration client
-├── github_pr.py          # Auto PR creation logic
-├── .env                  # Secrets
-└── README.md
+### ⚡ Demo Mode (Default - Cloud)
+
+* Uses simulated Jenkins failures
+* PR creation is mocked
+* Ensures reliable public demo
+
+### 🔌 Live Mode (Local)
+
+* Connects to real Jenkins
+* Creates real GitHub PRs
+* Requires credentials
+
+---
+
+## 🚀 Example
+
+### Failure
+
 ```
-
----
-
-## 🚀 Example Workflow
-
-### Failed Jenkins Job
-
-```bash
-
 error: cannot find symbol
 ```
 
----
-
-## AI Diagnosis
+### AI Output
 
 ```json
 {
@@ -150,9 +132,7 @@ error: cannot find symbol
 }
 ```
 
----
-
-## Auto-Generated Fix
+### Fix
 
 ```java
 import java.util.List;
@@ -160,141 +140,84 @@ import java.util.List;
 
 ---
 
-## Auto-Created Pull Request
+## 🛠 Setup
 
-```text
-Fix Jenkins build failure caused by missing import
+### 1. Clone
+
 ```
-
----
-
-## 🛠 Installation
-
-### Clone
-
-```bash
 git clone https://github.com/Debdatta1105/AICompiler.git
 cd AICompiler
 ```
 
----
+### 2. Install
 
-## Install Dependencies
-
-```bash
+```
 pip install -r requirements.txt
 ```
 
----
+### 3. Configure
 
-## Configure Environment
+Create `.env`:
 
-Create:
-
-```bash
-.env
 ```
-
-```env
 GROQ_API_KEY=xxx
+GITHUB_TOKEN=xxx
 JENKINS_URL=http://localhost:8080
-JENKINS_USERNAME=your_user
-API_TOKEN=your_jenkins_token
-GITHUB_TOKEN=your_github_token
+JENKINS_USERNAME=xxx
+API_TOKEN=xxx
 ```
 
 ---
 
-## Run UI
+### 4. Run
 
-```bash
+```
 python -m streamlit run app.py
 ```
 
 ---
 
-## 🔍 Future Roadmap
+## 🔐 Deployment Notes
 
-Planned:
-
-* [ ] Multi-agent remediation orchestration
-* [ ] GitHub Actions support
-* [ ] Kubernetes deployment diagnostics
-* [ ] PR auto-review agent
-* [ ] Vulnerability fix remediation (Black Duck/SCA)
-* [ ] Self-healing CI pipelines
+* Uses Streamlit secrets in cloud
+* Jenkins integration works locally
+* Public demo runs in **safe simulated mode**
 
 ---
 
-## 💡 Interesting Use Cases
+## 💡 Why This Project Stands Out
 
-* Autonomous DevOps Copilot
-* Self-Healing CI/CD
-* AI SRE Assistant
-* Failure Triage Automation
-* Remediation Bots for Platform Engineering
-
----
-
-## 🧪 Potential Research Extensions
-
-This can evolve into:
-
-* Agentic Software Repair
-* CI Failure Pattern Learning
-* Multi-Agent DevOps Systems
+* Combines **LLM reasoning + DevOps automation**
+* Moves beyond chatbots → **actionable systems**
+* Demonstrates **end-to-end engineering workflow**
+* Designed for **real-world extensibility**
 
 ---
 
-## ⭐ What Makes This Interesting
+## 🚧 Limitations
 
-This is not another chatbot.
-
-This combines:
-
-* LLM reasoning
-* Jenkins integration
-* GitHub automation
-* Agentic remediation workflows
-
-It moves from:
-
-**AI as assistant → AI as autonomous engineering agent**
+* Fixes are heuristic (not formally verified)
+* Limited to common failure patterns
+* Jenkins live mode requires local setup
 
 ---
 
-## 🤝 Contributing
+## 🔮 Future Work
 
-PRs, ideas, and improvements are welcome.
-
-Especially interested in:
-
-* New auto-fix patterns
-* More failure detectors
-* Multi-agent extensions
+* Multi-agent orchestration
+* CI retry + validation loop
+* PR auto-review agent
+* GitHub Actions support
 
 ---
 
 ## 👨‍💻 Author
 
 **Debdatta Ray**
-
-Building at the intersection of:
-
-* Agentic AI
-* DevOps Automation
-* Autonomous Software Systems
-
-GitHub:
-
-[https://github.com/Debdatta1105](https://github.com/Debdatta1105)
+GitHub: https://github.com/Debdatta1105
 
 ---
 
-## 🌟 If you like this project
+## ⭐ If you found this interesting
 
-Give it a star.
-
-If you think autonomous remediation is the future of DevOps,
-
-**let’s build it.**
+Give it a star — and feel free to contribute.
