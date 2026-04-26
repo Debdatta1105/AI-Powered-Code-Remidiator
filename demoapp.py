@@ -24,18 +24,41 @@ st.markdown("""
 > Uses LLM tool-calling to orchestrate Jenkins, GitHub, and file system operations.
 """)
 
-# ------------------------
+# ============================================================================
+# Sidebar: Configuration & Demo Mode Toggle
+# ============================================================================
+
+st.sidebar.header("⚙️ Configuration")
+
+# Demo Mode Toggle
+demo_enabled = st.sidebar.checkbox(
+    "🎮 Use Demo Mode",
+    value=os.getenv("DEMO_MODE", "false").lower() == "true",
+    help="Use simulated Jenkins data (no real Jenkins required)"
+)
+
+# Update demo mode in MCP server
+mcp_server.set_demo_mode(demo_enabled)
+
+if demo_enabled:
+    st.sidebar.info("✅ Demo Mode ENABLED - Using simulated data")
+else:
+    st.sidebar.info("🔌 Production Mode - Using real Jenkins API")
+
+st.sidebar.divider()
+
+# ============================================================================
 # Mode Toggle
-# ------------------------
+# ============================================================================
 
 mode = st.sidebar.radio("Mode", ["Autonomous Agent", "Interactive Analysis"])
 IS_AUTONOMOUS = mode == "Autonomous Agent"
 
-# ------------------------
+# ============================================================================
 # Sidebar: Job Selection
-# ------------------------
+# ============================================================================
 
-st.sidebar.header("Configuration")
+st.sidebar.header("Jenkins Job")
 
 # Get available jobs via MCP
 try:
@@ -43,11 +66,19 @@ try:
     if jobs_result.get("success"):
         jobs = [j["name"] for j in jobs_result.get("jobs", [])]
     else:
+        error_msg = jobs_result.get('error', 'Unknown error')
         jobs = []
-        st.sidebar.error(f"Could not load jobs: {jobs_result.get('error')}")
+        if demo_enabled:
+            st.sidebar.error(f"❌ Demo Error: {error_msg}")
+        else:
+            st.sidebar.error(f"❌ Jenkins Error: {error_msg}\n\nTip: Enable Demo Mode or check your Jenkins configuration in .env")
 except Exception as e:
     jobs = []
-    st.sidebar.error(f"Error fetching jobs: {e}")
+    error_msg = str(e)
+    if "NoneType" in error_msg:
+        st.sidebar.error(f"❌ Jenkins client error\n\nTip: Enable 🎮 Demo Mode or verify Jenkins is running at {os.getenv('JENKINS_URL')}")
+    else:
+        st.sidebar.error(f"❌ Error: {error_msg}")
 
 job_name = st.sidebar.selectbox(
     "Select Jenkins Job",

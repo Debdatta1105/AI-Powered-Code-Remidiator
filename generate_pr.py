@@ -9,12 +9,24 @@ def get_secret(key, default=None):
         return os.getenv(key, default)
 
 def create_auto_fix_pr(fix):
+    # Check demo mode
+    demo_mode = os.getenv("DEMO_MODE", "false").lower() == "true"
 
     if not fix.get("can_auto_fix", False):
         print("No safe auto-fix possible.")
         return {
             "success": False,
             "error": "can_auto_fix is False or not provided"
+        }
+
+    if demo_mode:
+        print("[DEMO MODE] Simulating PR creation...")
+        return {
+            "success": True,
+            "message": "[DEMO] PR would be created with the provided fix",
+            "pr_url": "https://github.com/Debdatta1105/Simple-Chat/pull/999",
+            "branch": "auto-fix-jenkins-build",
+            "fix_summary": fix
         }
 
     g = Github(

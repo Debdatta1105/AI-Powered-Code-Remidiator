@@ -11,6 +11,9 @@ import mcp_server
 
 load_dotenv()
 
+# Check demo mode
+DEMO_MODE = os.getenv("DEMO_MODE", "false").lower() == "true"
+
 def get_secret(key, default=None):
     try:
         return st.secrets[key]
