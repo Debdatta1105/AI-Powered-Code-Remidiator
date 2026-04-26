@@ -31,11 +31,13 @@ st.markdown("""
 st.sidebar.header("⚙️ Configuration")
 
 # Demo Mode Toggle
-demo_enabled = st.sidebar.checkbox(
-    "🎮 Use Demo Mode",
-    value=os.getenv("DEMO_MODE", "false").lower() == "true",
-    help="Use simulated Jenkins data (no real Jenkins required)"
-)
+demo = st.sidebar.radio("Mode", ["Demo", "Live Jenkins"])
+demo_enabled = demo == "Demo"
+# demo_enabled = st.sidebar.checkbox(
+#     "🎮 Use Demo Mode",
+#     value=os.getenv("DEMO_MODE", "false").lower() == "true",
+#     help="Use simulated Jenkins data (no real Jenkins required)"
+# )
 
 # Update demo mode in MCP server
 mcp_server.set_demo_mode(demo_enabled)
