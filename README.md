@@ -1,6 +1,7 @@
 # 🚀 AICompiler — MCP-Driven CI/CD Auto-Fix Agent
 
 > An autonomous, LLM-powered system that analyzes Jenkins build failures, generates fixes, and creates GitHub Pull Requests—all orchestrated through the **Model Context Protocol (MCP)**.
+> 🔗 **Live Demo:** https://ai-powered-code-remidiator-testmode.streamlit.app/
 
 **Status:** ✅ Fully MCP-driven | 🤖 Autonomous agents | 🔌 Tool-agnostic architecture
 
