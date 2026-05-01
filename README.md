@@ -25,6 +25,7 @@ Failed Build → Analyze Logs → Generate Fix → Create PR → Trigger New Bui
 ✅ **Real PR Creation** - Commits fixes directly to GitHub  
 ✅ **Auto Retrigger** - Optionally triggers new build after fix  
 ✅ **Streamlit UI** - Visual dashboard for easy interaction  
+**Failed Build → Root Cause → Suggested Fix → PR Creation -> Re-trigger Job**
 
 ---
 
