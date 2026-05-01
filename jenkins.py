@@ -3,8 +3,8 @@ from requests.auth import HTTPBasicAuth
 
 
 JENKINS_URL = "http://localhost:8080"
-USERNAME = ""
-API_TOKEN = ""
+USERNAME = "your_username_here"
+API_TOKEN = "your_api_token_here"
 
 
 class JenkinsClient:

@@ -9,10 +9,25 @@ def get_secret(key, default=None):
         return os.getenv(key, default)
 
 def create_auto_fix_pr(fix):
+    # Check demo mode
+    demo_mode = os.getenv("DEMO_MODE", "false").lower() == "true"
 
-    if not fix["can_auto_fix"]:
+    if not fix.get("can_auto_fix", False):
         print("No safe auto-fix possible.")
-        return
+        return {
+            "success": False,
+            "error": "can_auto_fix is False or not provided"
+        }
+
+    if demo_mode:
+        print("[DEMO MODE] Simulating PR creation...")
+        return {
+            "success": True,
+            "message": "[DEMO] PR would be created with the provided fix",
+            "pr_url": "https://github.com/Debdatta1105/Simple-Chat/pull/999",
+            "branch": "auto-fix-jenkins-build",
+            "fix_summary": fix
+        }
 
     g = Github(
         get_secret("GITHUB_TOKEN")
@@ -48,13 +63,19 @@ def create_auto_fix_pr(fix):
     target_file = fix.get("target_file")
     if not target_file:
         print("No target file provided")
-        return
+        return {
+            "success": False,
+            "error": "No target file provided"
+        }
 
     try:
         file = repo.get_contents(target_file, ref=branch_name)
-    except Exception:
+    except Exception as e:
         print("File not found")
-        return
+        return {
+            "success": False,
+            "error": f"File not found: {str(e)}"
+        }
 
     old_content = file.decoded_content.decode()
     lines = old_content.split("\n")
@@ -139,22 +160,39 @@ def create_auto_fix_pr(fix):
     # ----------------------------
     # Commit
     # ----------------------------
-    repo.update_file(
-        path=target_file,
-        message=fix.get("pr_title", "Auto fix"),
-        content=new_content,
-        sha=file.sha,
-        branch=branch_name
-    )
+    try:
+        repo.update_file(
+            path=target_file,
+            message=fix.get("pr_title", "Auto fix"),
+            content=new_content,
+            sha=file.sha,
+            branch=branch_name
+        )
+    except Exception as e:
+        return {
+            "success": False,
+            "error": f"Failed to update file: {str(e)}"
+        }
 
     # ----------------------------
     # Create PR
     # ----------------------------
-    pr = repo.create_pull(
-        title=fix.get("pr_title", "Auto Fix"),
-        body=fix.get("pr_body", ""),
-        head=branch_name,
-        base=base_branch
-    )
+    try:
+        pr = repo.create_pull(
+            title=fix.get("pr_title", "Auto Fix"),
+            body=fix.get("pr_body", ""),
+            head=branch_name,
+            base=base_branch
+        )
 
-    print("PR Created:", pr.html_url)
+        print("PR Created:", pr.html_url)
+        return {
+            "success": True,
+            "pr_url": pr.html_url,
+            "message": f"PR created successfully: {pr.html_url}"
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": f"Failed to create PR: {str(e)}"
+        }
